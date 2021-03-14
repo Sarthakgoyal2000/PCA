@@ -1,0 +1,88 @@
+import pandas as pd
+data = pd.read_csv("houseprice.csv")
+data
+
+***************************************
+
+import pandas as pd
+import numpy as np # working with arrays
+import matplotlib.pyplot as plt # visualization
+import seaborn as sb # visualization
+#from termcolor import colored as cl # text customization
+
+from sklearn.model_selection import train_test_split # data split
+
+from sklearn.linear_model import LinearRegression # OLS algorithm
+from sklearn.linear_model import Ridge # Ridge algorithm
+from sklearn.linear_model import Lasso # Lasso algorithm
+from sklearn.linear_model import BayesianRidge # Bayesian algorithm
+from sklearn.linear_model import ElasticNet # ElasticNet algorithm
+
+from sklearn.metrics import explained_variance_score as evs # evaluation metric
+from sklearn.metrics import r2_score as r2 # evaluation metric
+
+**********************************************************
+
+# 1. Heatmap
+import seaborn as sns
+hmap=data.corr()
+sns.heatmap(hmap)
+
+*********************************************************
+
+import re
+import pandas as pd
+from matplotlib import pyplot
+import numpy as np 
+import matplotlib.pyplot as plt 
+import seaborn as sns
+
+
+sns.set()
+%matplotlib inline
+
+
+#delete columns with many missing data
+data.drop(['PoolQC','MiscFeature','Alley','Fence','FireplaceQu','LotFrontage'], axis = 1,inplace=True)
+
+#Drop rows with missing data 
+data.dropna(inplace=True)
+
+from sklearn.model_selection import train_test_split
+data = pd.get_dummies(data) #Getting dummies for categorical values
+
+#Splitting test and train
+X_train, X_test, y_train, y_test = train_test_split(data.loc[:, data.columns != 'SalePrice'], data['SalePrice'], test_size=0.25, random_state=42)
+
+*******************************************************
+
+from sklearn.decomposition import PCA
+
+def pca_dec(data, n):
+  pca = PCA(n)
+  X_dec = pca.fit_transform(data)
+  return X_dec, pca
+
+
+pca_train_results, pca_train = pca_dec(X_train, 10)
+
+
+pca_test_results, pca_test = pca_dec(X_test, 10)
+
+
+names_pcas = [f"PCA Component {i}" for i in range(1, 11, 1)]
+scree = pd.DataFrame(list(zip(names_pcas, pca_train.explained_variance_ratio_)), columns=["Component", "Explained Variance Ratio"])
+print(scree)
+
+*******************************************************
+
+df = pd.DataFrame({'PCA':pca_train.components_[0], 'Variable Names':list(X_train.columns)})
+df = df.sort_values('PCA', ascending=False)
+
+
+df2 = pd.DataFrame(df)
+df2['PCA']=df2['PCA'].apply(np.absolute)
+df2 = df2.sort_values('PCA', ascending=False)
+
+
+df.head()
